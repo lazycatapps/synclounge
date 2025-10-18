@@ -1,0 +1,123 @@
+# app 的唯一 id,上架到商店需要保证不要冲突,尽量使用开发者自己的域名作为后缀.
+package: cloud.lazycat.app.liu.synclounge
+# app 的版本
+version: 5.2.35
+
+name: SyncLounge
+keyword: plex,sync,watch together,streaming,media,synchronization,group watch
+description: Plex 同步观影工具，支持跨地域同步观看 Plex 媒体内容
+
+# 软件名称,会显示在启动器之类的地方
+locales:
+  zh:
+    name: SyncLounge - Plex 同步观影工具
+    description: |
+      ## SyncLounge - Plex 同步观影工具
+
+      SyncLounge 官方网站：https://synclounge.tv/
+
+      SyncLounge 是一个强大的 Plex 媒体同步工具，让您可以与朋友、家人在不同地点同步观看 Plex 媒体内容。无论您的观众身在何处，SyncLounge 都能确保每个人的播放进度保持同步。
+
+      ## 主要功能
+
+      - 🎬 **跨地域同步播放**：无论观众身处何地，都能保持播放进度同步
+      - 👑 **房间控制**：第一个加入房间的用户成为主持人，可控制播放、暂停、快进等操作
+      - 🔍 **智能媒体匹配**：自动在所有可用的 Plex 媒体服务器中搜索等效副本
+      - 🔒 **隐私保护**：可以隐藏 Plex 用户名
+      - 📺 **自动播放**：支持连续剧集自动播放下一集
+      - 👥 **无需好友关系**：不需要成为 Plex 好友即可同步观看
+
+      ## 使用场景
+
+      - 与异地朋友一起观看电影
+      - 家庭成员分散时的同步追剧
+      - 在线观影聚会
+      - 远程协作观看
+
+      ## 技术特性
+
+      - 使用中间服务器在各客户端之间通信
+      - 支持多个 Plex Media Server
+      - 创建共享媒体资源库
+      - 轻量级部署，易于配置
+
+      ## 配置提示
+
+      - 请将自己的 Plex 账号写入环境变量 AUTH_LIST，多个账号请使用逗号分隔
+
+      **仓库地址：** https://github.com/lazycatapps/synclounge.git
+
+  en:
+    name: SyncLounge - Sync Plex Viewing Sessions
+    description: |
+      ## SyncLounge - Sync Plex Viewing Sessions
+
+      SyncLounge official website: https://synclounge.tv/
+
+      SyncLounge is a powerful Plex media synchronization tool that allows you to watch Plex media content in sync with friends and family across different locations. No matter where your viewers are, SyncLounge ensures everyone's playback stays synchronized.
+
+      ## Main Features
+
+      - 🎬 **Cross-Location Sync**: Keep playback synchronized regardless of viewer locations
+      - 👑 **Room Control**: The first person to join becomes the host with full control over play, pause, seek operations
+      - 🔍 **Smart Media Matching**: Automatically searches all available Plex Media Servers for equivalent copies
+      - 🔒 **Privacy Protection**: Option to hide Plex usernames
+      - 📺 **Auto-Play**: Supports automatic next episode playback for binge-watching
+      - 👥 **No Friend Requirement**: Sync without needing to be Plex buddies
+
+      ## Use Cases
+
+      - Watch movies together with remote friends
+      - Family TV show marathons when separated
+      - Online viewing parties
+      - Remote collaborative watching
+
+      ## Technical Features
+
+      - Uses middleware server for client communication
+      - Supports multiple Plex Media Servers
+      - Creates shared media repository
+      - Lightweight deployment with easy configuration
+
+      ## Configuration Tip
+
+      - Add your Plex accounts to the AUTH_LIST environment variable, separating multiple accounts with commas
+
+      **Repository:** https://github.com/lazycatapps/synclounge.git
+
+# 软件本身的 license
+license: https://choosealicense.com/licenses/mit/
+
+# 软件的主页,会在商店等地方体现
+homepage: https://github.com/synclounge/synclounge
+
+# lpk 的作者,会在商店等地方体现
+author: liu
+
+# application 作为一个特殊的 container 运行，对应的 service 名称为固定的`app`， 其他 service 可以通过此名称与 app 进行通讯
+application:
+  #是否存在后台任务， 若存在则系统不会对此 app 进行主动休眠等操作
+  background_task: true
+
+  # 期望的 app 域名，如果系统中已经有对应域名则会提示用户选择其他域名。 最终 app 分配到的域名以/lzcapp/run/app.subdomain 为准
+  subdomain: synclounge
+
+  routes:
+    - /=http://synclounge:8088
+
+  depends_on:
+    - synclounge
+
+  # 是否启用多实例
+  multi_instance: false
+
+  # 公开访问路径
+  public_path:
+    - /
+
+services:
+  synclounge:
+    # lzc-cli appstore copy-image lscr.io/linuxserver/synclounge:latest
+    image: registry.lazycat.cloud/liu/linuxserver/synclounge:8b24d23b0fb4eb7e
+    environment:
+      - AUTH_LIST=plexuser1,plexuser2,email1,machineid1
